@@ -43,30 +43,48 @@ using System.IO;
 using CommandLib;
 
 public class Global{
-	public static void error(string x){
-		Console.WriteLine("Error: " + x);
-	}
-	public static void debug(string msg, thinCLIProtocol tCLIprotocol){
+    public static void error(string x){
+        Console.WriteLine("Error: " + x);
+    }
+    public static void debug(string msg, thinCLIProtocol tCLIprotocol){
         if (tCLIprotocol.conf.debug)
-			Console.WriteLine("Debug: " + msg);
-	}
-	public static void usage(){
-		Console.WriteLine("Usage:");
-		Console.WriteLine("  xe -s <server> -u <username> -pw <password> [-p <port>] <command> <arguments>");
-		Console.WriteLine("For help, use xe -s <server> -u <user> -pw <password> [-p <port>] help");
-	}
+            Console.WriteLine("Debug: " + msg);
+    }
+    public static void usage(){
+        Console.WriteLine("XSConsole XenServer Console (xe) based on XCP or XenCenter code");
+        Console.WriteLine("Usage:");
+        Console.WriteLine(" xe [parameter] <command> <argument>");
+        Console.WriteLine("Parameter:");
+        Console.WriteLine("-s <server> mandatory");
+        Console.WriteLine("-u <username> mandatory");
+        Console.WriteLine("-pw <password> mandatory ");
+        Console.WriteLine("-p <port> optional, default 443");
+        Console.WriteLine("use system variable instead:");
+        Console.WriteLine("XE_HOST : Hostname");
+        Console.WriteLine("XE_USERNAME : Username");
+        Console.WriteLine("XE_PASSWORD : pasword");
+        Console.WriteLine("XE_PORT : Port");
+        Console.WriteLine();
+        Console.WriteLine("Additional parameter");
+        Console.WriteLine("-version : show version");
+        Console.WriteLine("-nossl : do not use SSL");
+        Console.WriteLine("-debug : display debug log");
+        Console.WriteLine("-display-config : display command configuration");
+		Console.WriteLine("-h : display this help");
+        Console.WriteLine("For XAPI help, use xe -s <server> -u <user> -pw <password> [-p <port>] help");
+    }
 }
 
 
 
 namespace thincli
 {
-	class MainClass
-	{
+    class MainClass
+    {
 
-	
-		public static void Main(string[] args)
-		{
+    
+        public static void Main(string[] args)
+        {
             thinCLIProtocol tCLIprotocol = new thinCLIProtocol(new delegateGlobalError(Global.error), new delegateGlobalUsage(Global.usage),
                                        new delegateGlobalDebug(Global.debug), new delegateConsoleWrite(delegate(string s) { Console.Write(s); }),
                                        new delegateConsoleWriteLine(delegate(string s) { Console.WriteLine(s); }),
@@ -77,33 +95,65 @@ namespace thincli
 
             String body = "";
             Char[] eqsep = {'='};
+            
+            bool isDisplayConfig = false;
+
+            string temp = Environment.GetEnvironmentVariable("XE_HOST");
+            if(temp != null)
+            {
+                tCLIprotocol.conf.hostname = temp;
+            }
+
+            temp = Environment.GetEnvironmentVariable("XE_USERNAME");
+            if(temp != null)
+            {
+                tCLIprotocol.conf.username = temp;
+            }
+
+            temp = Environment.GetEnvironmentVariable("XE_PASSWORD");
+            if(temp != null)
+            {
+                tCLIprotocol.conf.password = temp;
+            }
+
+            temp = Environment.GetEnvironmentVariable("XE_PORT");
+            if(temp != null)
+            {
+                tCLIprotocol.conf.port = Int32.Parse(temp);
+            }
+
             for(int i=0; i<args.Length; i++) {
                 String s = args[i];
                 try
                 {
-                	if (s.StartsWith("server")){
-                		tCLIprotocol.conf.hostname = (s.Split(eqsep))[1];
-                	} else if (s.Equals("-s")) {
+                    if (s.StartsWith("server")){
+                        tCLIprotocol.conf.hostname = (s.Split(eqsep))[1];
+                    } else if (s.Equals("-s")) {
                         tCLIprotocol.conf.hostname = args[++i]; 
-                	} else if (s.Equals("-u")){
+                    } else if (s.Equals("-u")){
                         tCLIprotocol.conf.username = args[++i]; 
-                	} else if (s.Equals("-pw")){
+                    } else if (s.Equals("-pw")){
                         tCLIprotocol.conf.password = args[++i]; 
-                 	} else if (s.Equals("-p")){
+                     } else if (s.Equals("-p")){
                         tCLIprotocol.conf.port = Int32.Parse(args[++i]); 
-                	} else if (s.Equals("--nossl")){
+                    } else if (s.Equals("--nossl")){
                         tCLIprotocol.conf.nossl = true;
-                	} else if (s.Equals("-debug")){
+                    } else if (s.Equals("-debug")){
                         tCLIprotocol.conf.debug = true;
-                	} else if (s.Equals("-version")){
-				    Console.WriteLine("ThinCLI protocol: " + tCLIprotocol.major + "." + tCLIprotocol.minor);
-				    Environment.Exit(0);
-               		} else body += s + "\n";
+                    } else if(s.Equals("-display-config")) {
+                        isDisplayConfig = true;
+                    } else if(s.Equals("-h")) {
+                        Global.usage();
+						Environment.Exit(0);
+                    } else if (s.Equals("-version")){
+                        Console.WriteLine("ThinCLI protocol: " + tCLIprotocol.major + "." + tCLIprotocol.minor);
+                        Environment.Exit(0);
+                    } else body += s + "\n";
                 }
                 catch {
-                	Global.error("Failed to parse command-line arguments");
-			        Global.usage();
-                	Environment.Exit(1);
+                    Global.error("Failed to parse command-line arguments");
+                    Global.usage();
+                    Environment.Exit(1);
                 }
             }
             if (tCLIprotocol.conf.hostname.Equals(""))
@@ -112,7 +162,15 @@ namespace thincli
                 Global.usage();
                 Environment.Exit(1);
             }
-		    Messages.performCommand(body, tCLIprotocol);
-		}
-	}
+
+            if(isDisplayConfig)
+            {
+                Console.WriteLine("Host : " + tCLIprotocol.conf.hostname);
+                Console.WriteLine("Username : " + tCLIprotocol.conf.username);
+                Console.WriteLine("Password : "  + "".PadRight(tCLIprotocol.conf.password.Length, '*'));
+            }
+
+            Messages.performCommand(body, tCLIprotocol);
+        }
+    }
 }

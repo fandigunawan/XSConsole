@@ -23,6 +23,22 @@ Requirements:
 xe -s server_path -u user_name -pw password command-list
 ```
 
+Alternatively for Linux/MacOS with system variables:
+```
+export XE_HOST=xenserver_host
+export XE_USERNAME=username
+export XE_PASSWORD=password
+xe command-list
+```
+For Windows
+```
+set XE_HOST=xenserver_host
+set XE_USERNAME=username
+set XE_PASSWORD=password
+xe command-list
+```
+
+
 For command-list, please refer to : https://linuxconfig.org/xe-full-command-list-reference-with-description-for-xenserver
 
 ## Build
@@ -66,3 +82,5 @@ MacOS X
 dotnet publish -c Release -f netcoreapp2.1 --self-contained -o pub/OSX64 -r osx-x64 .
 ```
 
+## License
+Please see xen-lic.txt

@@ -1,10 +1,10 @@
 #!/bin/sh
 dotnet restore
-dotnet publish -c Release -f netcoreapp3.1 --self-contained -o pub/Win64 -r win-x64 .
-dotnet publish -c Release -f netcoreapp3.1 --self-contained -o pub/Win32 -r win-x86 .
-dotnet publish -c Release -f netcoreapp3.1 --self-contained -o pub/Linux64 -r linux-x64 .
-dotnet publish -c Release -f netcoreapp3.1 --self-contained -o pub/LinuxMin64 -r linux-musl-x64 .
-dotnet publish -c Release -f netcoreapp3.1 --self-contained -o pub/OSX64 -r osx-x64 .
+dotnet publish -c Release -f net6.0 --self-contained -o pub/Win64 -r win-x64 .
+dotnet publish -c Release -f net6.0 --self-contained -o pub/Win32 -r win-x86 .
+dotnet publish -c Release -f net6.0 --self-contained -o pub/Linux64 -r linux-x64 .
+dotnet publish -c Release -f net6.0 --self-contained -o pub/LinuxMin64 -r linux-musl-x64 .
+dotnet publish -c Release -f net6.0 --self-contained -o pub/OSX64 -r osx-x64 .
 cp xen-lic.txt pub/Win64/
 cp xen-lic.txt pub/Win32/
 cp xen-lic.txt pub/Linux64/

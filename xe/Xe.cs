@@ -52,25 +52,28 @@ public class Global{
     }
     public static void usage(){
         Console.WriteLine("XSConsole XenServer Console (xe) based on XCP or XenCenter code");
-        Console.WriteLine("Usage:");
-        Console.WriteLine(" xe [parameter] <command> <argument>");
+        Console.WriteLine("Ported by Fandi Gunawan https://github.com/fandigunawan/XSConsole");
+        Console.WriteLine("Runtime: {0} on {1}", Environment.Version, Environment.OSVersion);
+        Console.WriteLine();
+        Console.WriteLine("Usage: xe [parameter] <command> <argument>");
+        Console.WriteLine();
         Console.WriteLine("Parameter:");
-        Console.WriteLine("-s <server> mandatory");
-        Console.WriteLine("-u <username> mandatory");
-        Console.WriteLine("-pw <password> mandatory ");
-        Console.WriteLine("-p <port> optional, default 443");
+        Console.WriteLine("  -s <server> mandatory");
+        Console.WriteLine("  -u <username> mandatory");
+        Console.WriteLine("  -pw <password> mandatory ");
+        Console.WriteLine("  -p <port> optional, default 443");
         Console.WriteLine("use system variable instead:");
-        Console.WriteLine("XE_HOST : Hostname");
-        Console.WriteLine("XE_USERNAME : Username");
-        Console.WriteLine("XE_PASSWORD : pasword");
-        Console.WriteLine("XE_PORT : Port");
+        Console.WriteLine("  XE_HOST : Hostname");
+        Console.WriteLine("  XE_USERNAME : Username");
+        Console.WriteLine("  XE_PASSWORD : pasword");
+        Console.WriteLine("  XE_PORT : Port");
         Console.WriteLine();
         Console.WriteLine("Additional parameter");
-        Console.WriteLine("-version : show version");
-        Console.WriteLine("-nossl : do not use SSL");
-        Console.WriteLine("-debug : display debug log");
-        Console.WriteLine("-display-config : display command configuration");
-		Console.WriteLine("-h : display this help");
+        Console.WriteLine("  -version : show version");
+        Console.WriteLine("  -nossl : do not use SSL");
+        Console.WriteLine("  -debug : display debug log");
+        Console.WriteLine("  -display-config : display command configuration");
+		Console.WriteLine("  -h : display this help");
         Console.WriteLine("For XAPI help, use xe -s <server> -u <user> -pw <password> [-p <port>] help");
     }
 }
